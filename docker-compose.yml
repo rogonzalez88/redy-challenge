@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - data:/data/db
+  back:
+    build: ./back
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URI: mongodb://root:password@mongodb:27017/challenge?authSource=admin
+      PORT: 4000
+
+  front:
+    build: ./front
+    ports:
+      - 8080:8080
+    depends_on:
+      - back
+
+volumes:
+  data:
